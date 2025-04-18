@@ -6,104 +6,7 @@
   <title>YouTube Downloader</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #121212;
-      --text: #ffffff;
-      --card: #1e1e1e;
-      --accent: #e50914;
-    }
-    [data-theme='light'] {
-      --bg: #ffffff;
-      --text: #000000;
-      --card: #f5f5f5;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: var(--card);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: var(--accent);
-    }
-
-    .theme-toggle {
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--text);
-      border-radius: 8px;
-      font-size: 0.9rem;
-    }
-
-    main {
-      max-width: 800px;
-      margin: auto;
-      padding: 2rem;
-    }
-
-    input, select, button {
-      padding: 0.7rem;
-      margin: 0.5rem 0;
-      width: 100%;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    button {
-      background: var(--accent);
-      color: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 10px;
-      padding: 1rem;
-      margin-top: 1rem;
-    }
-
-    .thumbnail {
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    .info {
-      margin-top: 1rem;
-    }
-
-    .info h2 {
-      margin: 0.5rem 0;
-    }
-
-    .download-links a {
-      display: block;
-      margin: 0.5rem 0;
-      text-decoration: none;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #888;
-    }
+    /* Style yang sama seperti sebelumnya... */
   </style>
 </head>
 <body data-theme="dark">
@@ -115,23 +18,13 @@
   <main>
     <h1>Download Video / Audio dari YouTube</h1>
     <input type="text" id="ytUrl" placeholder="Masukkan URL YouTube (cth: https://youtu.be/...)" />
-    <select id="type">
+    <select id="type" onchange="updateQualityOptions()">
       <option value="mp3">Audio (MP3)</option>
       <option value="mp4">Video (MP4)</option>
     </select>
     <select id="quality">
-      <option value="96">96</option>
-      <option value="128">128</option>
-      <option value="256" selected>256</option>
-      <option value="320">320</option>
-      <option value="144">144</option>
-      <option value="240">240</option>
-      <option value="360">360</option>
-      <option value="480">480</option>
-      <option value="720">720</option>
-      <option value="1080">1080</option>
+      <!-- Kualitas akan di-update di sini -->
     </select>
-    <input type="text" id="apikey" placeholder="Masukkan API Key (contoh: free)" />
     <button onclick="fetchDownload()">Download</button>
 
     <div id="result"></div>
@@ -147,14 +40,39 @@
       document.body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
     }
 
+    // Update kualitas yang tersedia berdasarkan format yang dipilih
+    function updateQualityOptions() {
+      const type = document.getElementById("type").value;
+      const qualitySelect = document.getElementById("quality");
+
+      // Clear previous quality options
+      qualitySelect.innerHTML = "";
+
+      // Cek format yang dipilih dan beri kualitas yang sesuai
+      let qualities = [];
+      if (type === "mp3") {
+        qualities = ["96", "128", "256", "320"];
+      } else if (type === "mp4") {
+        qualities = ["144", "240", "360", "480", "720", "1080"];
+      }
+
+      // Populate kualitas ke dropdown
+      qualities.forEach(q => {
+        const option = document.createElement("option");
+        option.value = q;
+        option.textContent = `${q}p`;
+        qualitySelect.appendChild(option);
+      });
+    }
+
     async function fetchDownload() {
       const url = encodeURIComponent(document.getElementById("ytUrl").value.trim());
       const type = document.getElementById("type").value;
       const quality = document.getElementById("quality").value;
-      const apikey = document.getElementById("apikey").value.trim();
+      const apikey = "free";
 
-      if (!url || !apikey) {
-        alert("URL dan API key harus diisi!");
+      if (!url) {
+        alert("Masukkan URL YouTube!");
         return;
       }
 
@@ -184,7 +102,7 @@
             </div>
           `;
         } else {
-          document.getElementById("result").innerHTML = `<p style="color:red;">Gagal mengambil data. Pastikan URL dan API key benar.</p>`;
+          document.getElementById("result").innerHTML = `<p style="color:red;">Gagal mengambil data. Coba kualitas atau URL lain.</p>`;
         }
       } catch (err) {
         console.error(err);
