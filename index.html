@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>YouTube Downloader</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -114,7 +114,7 @@
 
   <main>
     <h1>Download Video / Audio dari YouTube</h1>
-    <input type="text" id="ytUrl" placeholder="Masukkan URL YouTube (cth: https://youtu.be/ID)" />
+    <input type="text" id="ytUrl" placeholder="Masukkan URL YouTube (cth: https://youtu.be/...)" />
     <select id="type">
       <option value="mp3">Audio (MP3)</option>
       <option value="mp4">Video (MP4)</option>
@@ -159,11 +159,11 @@
       }
 
       const endpoint = `https://restapi.rizk.my.id/ytdown?url=${url}&format=${type}&quality=${quality}&apikey=${apikey}`;
-      console.log("Request to:", endpoint);
+      const proxyEndpoint = `https://corsproxy.io/?${encodeURIComponent(endpoint)}`;
       document.getElementById("result").innerHTML = `<p>Loading...</p>`;
 
       try {
-        const response = await fetch(endpoint);
+        const response = await fetch(proxyEndpoint);
         const data = await response.json();
 
         if (data.status === "success") {
